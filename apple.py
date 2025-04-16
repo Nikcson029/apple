@@ -25,7 +25,7 @@ with st.sidebar:
 
 
 @st.cache_data(ttl=3600)
-def load_data(start_date, end_date, period):
+def load_data(start, end, interval):
     try:
         data = yf.download('AAPL', start=str(start), end=str(end), interval=interval, progress=False)
         if data.empty:
