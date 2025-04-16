@@ -24,11 +24,16 @@ with st.sidebar:
     period = st.selectbox("Период", ["1d", "1wk", "1mo"], index = 2)
 
 
-@st.cache_data(ttl = 3600)
-def load_data(start, end, interval):
-    ticker = "AAPL"
-    data = yf.download(ticker, start = str(start), end = str(end), interval = interval, progress = False)
-    return data
+@st.cache_data(ttl=3600)
+def load_data(start_date, end_date, period):
+    try:
+        data = yf.download('AAPL', start=str(start), end=str(end), interval=interval, progress=False)
+        if data.empty:
+            data = yf.Ticker("AAPL").history(start=str(start), end=str(end), interval=interval)
+        return data
+    except Exception as e:
+        st.error(f"Ошибка загрузки данных: {e}")
+        return pd.DataFrame()
 
 try:
     data = load_data(start_date, end_date, period)
